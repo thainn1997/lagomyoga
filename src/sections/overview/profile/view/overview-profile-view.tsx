@@ -67,9 +67,13 @@ export default function OverviewProfileViewPage({
 
   const [currentTab, setCurrentTab] = useState('schedule');
 
-  const startDay = currentReceipt.map((item) => item.start_date);
+  const receiptList = currentReceipt ?? [];
 
-  const startDate = dayjs(startDay[0]).subtract(1, 'day').startOf('day')?.toISOString();
+  const startDay = receiptList.map((item) => item.start_date);
+
+  const startDate = startDay[0]
+    ? dayjs(startDay[0]).subtract(1, 'day').startOf('day').toISOString()
+    : dayjs().subtract(1, 'year').startOf('day').toISOString();
 
   const endDate = dayjs().add(1, 'day').endOf('day').toISOString();
 
@@ -95,14 +99,14 @@ export default function OverviewProfileViewPage({
 
   const calendarSchedules: Schedule[] = [];
 
-  currentReceipt.forEach((item) => {
-    item.schedule.map((schedule) =>
+  receiptList.forEach((item) => {
+    (item.schedule ?? []).forEach((schedule) => {
       calendarSchedules.push({
         classId: schedule.classId,
         data: schedule.data,
         userId: schedule.userId,
-      })
-    );
+      });
+    });
   });
 
   return (

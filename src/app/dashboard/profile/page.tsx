@@ -22,14 +22,16 @@ export default function ProfilePage() {
     error: errorReceipt,
     isLoading: loadingReceipt,
     mutate,
-  } = useSWR(`/items/receipt?fields=*&filter=${JSON.stringify(filter)}`);
+  } = useSWR(user?.id ? `/items/receipt?fields=*&filter=${JSON.stringify(filter)}` : null);
 
   const {
     data: currentClass,
     error: errorClass,
     isLoading: loadingClass,
   } = useSWR(
-    `/items/class?fields=*,time_shift.*&filter[students][directus_users_id][_eq]=${user?.id}`
+    user?.id
+      ? `/items/class?fields=*,time_shift.*&filter[students][directus_users_id][_eq]=${user.id}`
+      : null
   );
 
   useEffect(() => {
@@ -37,13 +39,13 @@ export default function ProfilePage() {
   }, [mutate]);
 
   if (errorReceipt || errorClass) return <NotFoundView />;
-  if (loadingReceipt || loadingClass) return <SplashScreen />;
+  if (!user?.id || loadingReceipt || loadingClass) return <SplashScreen />;
 
   return (
     <OverviewProfileViewPage
       profile={user}
-      currentReceipt={currentReceipt}
-      currentClass={currentClass}
+      currentReceipt={currentReceipt ?? []}
+      currentClass={currentClass ?? []}
       loadingReceipt={loadingReceipt}
     />
   );
