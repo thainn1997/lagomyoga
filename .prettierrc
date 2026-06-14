@@ -1,0 +1,18 @@
+{
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "importOrder": [
+    "custom-mui",
+    "custom-routes",
+    "custom-hooks",
+    "custom-utils",
+    "internal",
+    "custom-components",
+    "custom-sections",
+    "custom-types"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

@@ -1,0 +1,23 @@
+export type IFiles = {
+  charset: string;
+  description: string;
+  duration: string;
+  embed: string;
+  filename_disk: string;
+  filename_download: string;
+  filesize: string;
+  folder: string;
+  height: number;
+  id: string;
+  location: string;
+  metadata: {};
+  modified_by: string;
+  modified_on: string;
+  storage: string;
+  tags: string;
+  title: string;
+  type: string;
+  uploaded_by: string;
+  uploaded_on: string;
+  width: number;
+};

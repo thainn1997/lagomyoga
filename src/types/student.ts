@@ -1,0 +1,81 @@
+export type IStudentUser = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  appearance: string;
+  auth_data: string;
+  avatar: string;
+  description: string;
+  email_notifications: boolean;
+  external_identifier: string;
+  language: string;
+  last_access: string;
+  last_page: string;
+  location: string;
+  provider: string;
+  role: string;
+  status: string;
+  tags: string;
+  tfa_secret: string;
+  theme_dark: string;
+  theme_dark_overrides: string;
+  theme_light: string;
+  theme_light_overrides: string;
+  title: string;
+  token: string;
+  birthday: string;
+  phone: string;
+  refresh_token?: string;
+  access_token?: string;
+};
+
+export type IStudentUserWithAttendance = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  appearance: string;
+  auth_data: string;
+  avatar: string;
+  description: string;
+  email_notifications: boolean;
+  external_identifier: string;
+  language: string;
+  last_access: string;
+  last_page: string;
+  location: string;
+  provider: string;
+  role: string;
+  status: string;
+  tags: string;
+  tfa_secret: string;
+  theme_dark: string;
+  theme_dark_overrides: string;
+  theme_light: string;
+  theme_light_overrides: string;
+  title: string;
+  token: string;
+  birthday: string;
+  attendanceLog: {
+    id: string;
+    status: string;
+    sort: string;
+    user_created: string;
+    date_created: string;
+    user_updated: string;
+    date_updated: string;
+    student: string;
+    time_shift: string;
+  }[];
+};
+
+export type IStudentTableFilterValue = string | string[];
+
+export type IStudentTableFilters = {
+  first_name?: string;
+  last_name: string;
+  status?: string;
+};
