@@ -51,13 +51,17 @@ export default function StudentCreateNewForm() {
   const NewUserSchema = Yup.object().shape({
     first_name: Yup.string().required('Vui lòng nhập họ!'),
     last_name: Yup.string().required('Vui lòng nhập tên!'),
-    email: Yup.string().required('Vui lòng nhập email!').email('Vui lòng kiểm tra lại email!'),
-    password: Yup.string().required('Vui lòng nhập mật khẩu!'),
-    location: Yup.string(),
+    email: Yup.string()
+      .nullable()
+      .notRequired()
+      .transform((value) => (value === '' ? null : value))
+      .email('Vui lòng kiểm tra lại email!'),
+    password: Yup.string().nullable().notRequired(),
+    location: Yup.string().nullable().notRequired(),
     status: Yup.string().required('Vui lòng chọn trạng thái!'),
-    description: Yup.string(),
-    birthday: Yup.mixed<any>().nullable().required('Vui lòng chọn ngày tháng năm sinh'),
-    phone: Yup.string(),
+    description: Yup.string().nullable().notRequired(),
+    birthday: Yup.mixed<any>().nullable().notRequired(),
+    phone: Yup.string().nullable().notRequired(),
     avatar: Yup.mixed<any>().nullable(),
   });
 
@@ -91,22 +95,39 @@ export default function StudentCreateNewForm() {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    const current = dayjs(data.birthday).toISOString()
+    const current = data.birthday ? dayjs(data.birthday).toISOString() : null;
     try {
-      await axiosInstance.post('/users', {
-        location: data.location,
-        description: data.description,
-        birthday: current,
-        phone: data.phone,
+      const payload: any = {
         last_name: data.last_name,
         first_name: data.first_name,
-        email: data.email,
-        password: data.password,
         status: data.status,
         role: 'b49dda8a-60a9-44b5-9d88-9b0db3480741',
         provider: 'default',
-        avatar: fileImg?.id,
-      });
+      };
+
+      if (data.email) {
+        payload.email = data.email;
+      }
+      if (data.password) {
+        payload.password = data.password;
+      }
+      if (data.location) {
+        payload.location = data.location;
+      }
+      if (data.description) {
+        payload.description = data.description;
+      }
+      if (data.phone) {
+        payload.phone = data.phone;
+      }
+      if (current) {
+        payload.birthday = current;
+      }
+      if (fileImg?.id) {
+        payload.avatar = fileImg.id;
+      }
+
+      await axiosInstance.post('/users', payload);
       mutate();
       reset();
       enqueueSnackbar('Tạo thành công', { variant: 'success' });
