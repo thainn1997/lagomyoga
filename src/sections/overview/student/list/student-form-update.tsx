@@ -48,7 +48,11 @@ export default function StudentUpdateForm({ currentUser, open, onClose }: IProps
   const NewUserSchema = Yup.object().shape({
     first_name: Yup.string().required('Vui lòng nhập họ!'),
     last_name: Yup.string().required('Vui lòng nhập tên!'),
-    email: Yup.string().required('Vui lòng nhập email!').email('Vui lòng kiểm tra lại email!'),
+    email: Yup.string()
+      .nullable()
+      .notRequired()
+      .transform((value) => (value === '' ? null : value))
+      .email('Vui lòng kiểm tra lại email!'),
     password: Yup.string().required('Vui lòng nhập mật khẩu!'),
     location: Yup.string(),
     status: Yup.string().required('Vui lòng chọn trạng thái!'),

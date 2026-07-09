@@ -48,7 +48,11 @@ export default function ReceiptEditFormView({ dataReceipt, open, onClose, user }
   const NewUserSchema = Yup.object().shape({
     first_name: Yup.string().required('Vui lòng nhập họ!'),
     last_name: Yup.string().required('Vui lòng nhập tên!'),
-    email: Yup.string().required('Vui lòng nhập email!'),
+    email: Yup.string()
+      .nullable()
+      .notRequired()
+      .transform((value) => (value === '' ? null : value))
+      .email('Vui lòng kiểm tra lại email!'),
     total_sessions: Yup.number().integer().required('Vui lòng nhập số buổi học!'),
     amount_received: Yup.number().integer().required('Vui lòng nhập học phí!'),
     start_date: Yup.mixed<any>().nullable().required('Vui lòng chọn ngày bắt đầu học'),

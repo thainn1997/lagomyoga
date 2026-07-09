@@ -59,7 +59,11 @@ export default function ClassEditDayStudyView({
   const NewUserSchema = Yup.object().shape({
     first_name: Yup.string().required('Vui lòng nhập họ!'),
     last_name: Yup.string().required('Vui lòng nhập tên!'),
-    email: Yup.string().required('Vui lòng nhập email!'),
+    email: Yup.string()
+      .nullable()
+      .notRequired()
+      .transform((value) => (value === '' ? null : value))
+      .email('Vui lòng kiểm tra lại email!'),
     day_studies: Yup.array().nullable().required('Vui lòng chọn ngày học'),
   });
 

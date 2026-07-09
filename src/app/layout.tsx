@@ -17,10 +17,11 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import { AuthProvider } from 'src/auth/context/jwt';
 import { LocalizationProvider } from 'src/locales';
 import 'react-toastify/dist/ReactToastify.css';
-import 'dayjs/locale/de';
+import 'dayjs/locale/vi';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.locale('vi');
 // ----------------------------------------------------------------------
 
 export const metadata = {
