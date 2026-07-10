@@ -86,8 +86,8 @@ export default function TimeShiftListView({ data, user }: IProps) {
               />
 
               <TableBody>
-                {data
-                  .sort((a: any, b: any) => a.id - b.id)
+                {[...data]
+                  .sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''))
                   .slice(
                     table.page * table.rowsPerPage,
                     table.page * table.rowsPerPage + table.rowsPerPage

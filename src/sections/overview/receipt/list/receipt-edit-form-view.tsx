@@ -90,23 +90,98 @@ export default function ReceiptEditFormView({ dataReceipt, open, onClose, user }
     fetcher
   );
 
+  const { mutate: mutateUser } = useSWR('/users', fetcher);
+
+  const filter = {
+    _and: [
+      { end_date: { _lte: '$NOW' } },
+      { end_date: { _gte: '$NOW(-3 day)' } },
+      { status: { _eq: 'published' } },
+    ],
+  };
+
+  const { mutate: mutateRecipt } = useSWR(
+    `/items/receipt?fields=*,student.*&filter=${JSON.stringify(filter)}`,
+    fetcher
+  );
+
   const values = watch('amount_received');
 
+  // Code tạo list danh sách thông tin lớp học
+  const calanderMulUser = async (fromDate: Date, toDate: Date) => {
+    const dayResults: any = [];
+    try {
+      const res = await axiosInstance.get(
+        `/items/class_directus_users?filter[directus_users_id][_eq]=${idUser}&filter[day_studies][_nnull]=${true}&filter[class_id][_nnull]=${true}`
+      );
+      res.data.forEach((classUser: any) => {
+        const result: any = {
+          userId: idUser,
+          classId: classUser.class_id,
+        };
+        const results = renderCalander(fromDate, toDate, classUser?.day_studies);
+        result.data = results;
+        dayResults.push(result);
+      });
+      return dayResults;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  };
+
+  // Code render thông tin buổi học
+  const renderCalander = (fromDate: Date, toDate: Date, listDay: string[]) => {
+    const dayResults = [];
+    const start = dayjs(fromDate);
+    const end = dayjs(toDate);
+    for (let m = dayjs(start); m.isBefore(end.add(1, 'days')); m = m.add(1, 'days')) {
+      const day = m.day();
+      const dayString = day === 0 ? 'CN' : (day + 1).toString();
+      if (listDay.includes(dayString)) {
+        dayResults.push({
+          date: m.format('DD-MM-YYYY'),
+          dayOfWeek: dayString,
+        });
+      }
+    }
+    return dayResults;
+  };
+
   const onSubmit = handleSubmit(async (data) => {
-    const date = dayjs(data.start_date);
+    const date = data.start_date.toISOString();
+    const start = new Date(date);
+    const endDate = dayjs(data.start_date)
+      .add(Number(data.duration), 'week')
+      .subtract(1, 'day')
+      .toISOString();
+    const end = new Date(endDate);
+    const dayResults = await calanderMulUser(start, end);
 
     try {
+      // 1. Cập nhật thông tin học sinh
+      await axiosInstance.patch(`/users/${idUser}`, {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+      });
+
+      // 2. Cập nhật biên lai
       await axiosInstance.patch(`/items/receipt/${id}`, {
         amount_received: data.amount_received,
-        start_date: date.toISOString(),
+        start_date: dayjs(date).format('YYYY-MM-DDTHH:mm:ss'),
         student: idUser,
         total_sessions: data.total_sessions,
         status: 'published',
         duration: data.duration,
-        end_date: date.add(Number(data.duration), 'week').subtract(1, 'day').toISOString(),
+        end_date: dayjs(endDate).format('YYYY-MM-DDTHH:mm:ss'),
+        schedule: dayResults,
       });
+
       enqueueSnackbar('Chỉnh sửa thành công', { variant: 'success' });
       mutate();
+      mutateUser();
+      mutateRecipt();
       onClose();
     } catch (error) {
       enqueueSnackbar('Chỉnh sửa không thành công', { variant: 'error' });

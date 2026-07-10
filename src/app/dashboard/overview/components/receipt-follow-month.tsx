@@ -23,8 +23,8 @@ export default function ReceiptFollowMonth() {
 
   const filter = {
     _and: [
-      { 'month(date_created)': { _eq: `${dayjs(month).month() + 1}` } },
-      { 'year(date_created)': { _eq: dayjs(value).year() } },
+      { 'month(start_date)': { _eq: `${dayjs(month).month() + 1}` } },
+      { 'year(start_date)': { _eq: dayjs(value).year() } },
     ],
   };
 

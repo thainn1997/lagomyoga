@@ -164,7 +164,7 @@ export default function ClassTableRow({
           sx={{ color: 'primary.main' }}
         >
           <Iconify icon="solar:pen-bold" />
-          <strong>Xem chi tiết</strong>
+          <strong>Chỉnh sửa</strong>
         </MenuItem>
 
         <MenuItem

@@ -166,17 +166,31 @@ function TableRowList({ index, row }: { index: number; row: IReceipt }) {
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: "nowrap" }}>
           {user && (
-            <Tooltip title="Xoá" placement="top" arrow sx={{ ml: 1 }}>
-              <IconButton
-                sx={{ color: "error.main" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  confirm.onTrue();
-                }}
-              >
-                <Iconify icon="solar:trash-bin-trash-bold" />
-              </IconButton>
-            </Tooltip>
+            <>
+              <Tooltip title="Sửa" placement="top" arrow>
+                <IconButton
+                  sx={{ color: "primary.main" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    quickEdit.onTrue();
+                  }}
+                >
+                  <Iconify icon="solar:pen-bold" />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Xoá" placement="top" arrow sx={{ ml: 1 }}>
+                <IconButton
+                  sx={{ color: "error.main" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    confirm.onTrue();
+                  }}
+                >
+                  <Iconify icon="solar:trash-bin-trash-bold" />
+                </IconButton>
+              </Tooltip>
+            </>
           )}
         </TableCell>
       </TableRow>

@@ -53,13 +53,15 @@ export default function StudentUpdateForm({ currentUser, open, onClose }: IProps
       .notRequired()
       .transform((value) => (value === '' ? null : value))
       .email('Vui lòng kiểm tra lại email!'),
-    password: Yup.string().required('Vui lòng nhập mật khẩu!'),
+    password: Yup.string()
+      .nullable()
+      .notRequired()
+      .transform((value) => (value === '' ? null : value)),
     location: Yup.string(),
     status: Yup.string().required('Vui lòng chọn trạng thái!'),
     description: Yup.string(),
-    birthday: Yup.mixed<any>().nullable().required('Vui lòng chọn ngày tháng năm sinh'),
+    birthday: Yup.mixed<any>().nullable().notRequired(),
     phone: Yup.string(),
-    // not required
   });
 
   const defaultValues = useMemo(
@@ -92,7 +94,10 @@ export default function StudentUpdateForm({ currentUser, open, onClose }: IProps
   const { mutate } = useSWR(`/users`, fetcher);
 
   const onSubmit = handleSubmit(async (data) => {
-    const payload = data;
+    const payload: any = { ...data };
+    if (!payload.password) {
+      delete payload.password;
+    }
     try {
       await axiosInstance.patch(`/users/${id}`, {
         ...payload,
